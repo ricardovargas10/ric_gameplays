@@ -311,7 +311,7 @@ async function completarIgdb() {
 
 /* ---------- servidor ---------- */
 const TIPOS = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon", ".json": "application/json", ".woff2": "font/woff2", ".webp": "image/webp", ".txt": "text/plain; charset=utf-8" };
-const PAGINAS = { "/": "index.html", "/series": "series.html", "/jogos": "jogos.html", "/frequentes": "frequentes.html", "/biblioteca": "biblioteca.html", "/telao": "telao.html", "/telao-novo": "telao-novo.html", "/videos": "videos.html", "/links": "links.html", "/sobre": "sobre.html", "/apoie": "apoie.html", "/anuncie": "anuncie.html" };
+const PAGINAS = { "/": "index.html", "/series": "series.html", "/jogos": "jogos.html", "/frequentes": "frequentes.html", "/biblioteca": "biblioteca.html", "/telao": "telao.html", "/telao-antigo": "telao-antigo.html", "/videos": "videos.html", "/links": "links.html", "/sobre": "sobre.html", "/apoie": "apoie.html", "/anuncie": "anuncie.html" };
 
 function json(res, codigo, dados) {
   res.writeHead(codigo, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" });
