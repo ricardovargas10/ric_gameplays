@@ -6,8 +6,9 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const RAIZ = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
+const RAIZ = path.dirname(fileURLToPath(import.meta.url)); // funciona com espaços no caminho ("Meu Drive")
 const PASTA = path.join(os.tmpdir(), "ric-votacao-site");
 const git = (args, cwd = RAIZ) => execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
 const tentar = (...a) => { try { return git(...a); } catch { return null; } };
