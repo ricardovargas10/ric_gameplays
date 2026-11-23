@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jogo · Ric Gameplays</title>
+<meta name="description" content="Jogos do canal Ric Gameplays, ao vivo todo dia às 19h.">
+<link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+<link rel="apple-touch-icon" href="/img/ric.webp">
+<script src="/js/tema.js"></script>
+<link rel="stylesheet" href="/css/sistema.css">
+<script type="module" src="/js/componentes.js"></script>
+</head>
+<body>
+<ric-topo pagina="jogos"></ric-topo>
+
+<main id="conteudo">
+  <div class="container" style="padding-top: var(--e-6)">
+    <div class="capa jogo-fundo" id="fundo"><span class="capa-reserva">Carregando…</span></div>
+  </div>
+
+  <section class="container jogo-ficha">
+    <div class="jogo-lado">
+      <div id="capaVertical"></div>
+      <a class="botao botao--principal botao--bloco" id="loja" href="#" target="_blank" rel="noopener" hidden>Ver na Steam</a>
+    </div>
+    <div class="jogo-texto">
+      <div class="linha" id="pilulas" style="gap: var(--e-2); margin-bottom: var(--e-4)"></div>
+      <h1 class="jogo-nome" id="nome">Carregando…</h1>
+      <p class="jogo-sinopse" id="sinopse"></p>
+      <dl class="jogo-dados">
+        <div><dt class="rotulo">Gêneros</dt><dd id="generos">—</dd></div>
+        <div><dt class="rotulo">Lançamento</dt><dd id="lancamento">—</dd></div>
+        <div><dt class="rotulo">Desenvolvedora</dt><dd id="desenvolvedora">—</dd></div>
+        <div><dt class="rotulo">Modo</dt><dd id="modo">—</dd></div>
+      </dl>
+      <div class="cartao cartao--peq jogo-status">
+        <p class="rotulo">Status no canal</p>
+        <p id="status"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--cinza" id="secServidores" hidden>
+    <div class="container">
+      <div class="secao-topo"><h2>Jogue comigo</h2><p class="sub">os servidores em que eu jogo</p></div>
+      <div class="grade" style="--colunas: 2" id="servidores"></div>
+    </div>
+  </section>
+
+  <section class="secao" id="secVideos" hidden>
+    <div class="container">
+      <div class="secao-topo"><h2 id="tituloVideos">Vídeos</h2><p class="sub">do canal @ric_gameplays</p><a class="acao" href="/videos">Ver todos os vídeos →</a></div>
+      <div class="grade" style="--colunas: 3" id="videos"></div>
+    </div>
+  </section>
+
+  <section class="secao secao--cinza">
+    <div class="container">
+      <div class="secao-topo"><h2>Outros jogos do canal</h2></div>
+      <div class="grade grade--capas" style="--colunas: 4" id="outros"></div>
+    </div>
+  </section>
+
+  <section class="container" style="padding: var(--e-9) 0">
+    <ric-discord></ric-discord>
+  </section>
+
+  <section class="secao-patrocinio container" style="padding-bottom: var(--e-9)"><ric-patrocinio></ric-patrocinio></section>
+</main>
+
+<ric-rodape></ric-rodape>
+
+<script type="module" src="/js/pagina-jogo.js"></script>
+</body>
+</html>

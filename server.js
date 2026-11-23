@@ -5,6 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
 import crypto from "node:crypto";
+import { criarIgdb } from "./lib/igdb.js";
 import { ler, gravar, gravarAgora, gravarPendentes } from "./lib/store.js";
 import { buscarJogos } from "./lib/notion.js";
 import { acharAppId, detalhes, limparCache, normalizar } from "./lib/steam.js";
@@ -87,6 +88,7 @@ const salvarVotos = () => gravarAgora("votos.json", votacao);
 let jogos = ler("jogos.json", null) || ler("../exemplo/jogos-exemplo.json", []);
 const fonte = { origem: conta.notion.token ? "notion" : "exemplo", ultimaSync: null, erro: null };
 let steamInfo = {}; // id da página -> dados da Steam
+const igdbInfo = ler("igdb.json", {}); // id da página -> { nome, generos, quando } (gêneros pela base da Twitch)
 
 /* ---------- estado enviado para as telas ---------- */
 function jogoPublico(j, lista = "principal") {
@@ -105,11 +107,12 @@ function jogoPublico(j, lista = "principal") {
     capaVertical: s.capaVertical || null,
     fundo: s.fundo || null,
     sinopse: j.sinopseNotion || s.sinopse || null,
-    generos: s.generos || [],
+    generos: igdbInfo[j.id]?.generos?.length ? igdbInfo[j.id].generos : (s.generos || []),
     lancamento: s.lancamento || null,
     desenvolvedora: s.desenvolvedora || null,
-    lojaUrl: s.lojaUrl || null,
-    lojaNome: s.lojaNome || "Ver na Steam"
+    lojaUrl: j.afiliado || s.lojaUrl || null,
+    lojaNome: j.afiliado ? "Comprar o jogo" : (s.lojaNome || "Ver na Steam"),
+    afiliado: !!j.afiliado
   };
 }
 function estadoPublico() {
@@ -163,12 +166,16 @@ function registrarVoto(jogoId, quem, lista = "principal") {
   const votos = votacao[L.votos];
   if (votosDe(j, lista) >= L.metaFixaVotos()) return false; // já bateu a meta: não soma mais
   votos[j.id] = (votos[j.id] || 0) + 1;
-  votacao[L.ultimos] = [{ quem, jogoId: j.id, jogo: j.nome, t: Date.now() }, ...votacao[L.ultimos]].slice(0, 12);
+  // quantos votos essa pessoa já deu nesse jogo (aparece em "Últimos votos")
+  const pessoas = (votacao.porPessoa = votacao.porPessoa || {});
+  const doJogo = ((pessoas[lista] = pessoas[lista] || {})[j.id] = pessoas[lista][j.id] || {});
+  doJogo[quem] = (doJogo[quem] || 0) + 1;
+  votacao[L.ultimos] = [{ quem, jogoId: j.id, jogo: j.nome, n: doJogo[quem], t: Date.now() }, ...votacao[L.ultimos]].slice(0, 30);
   const bateuMeta = atualizarFilas();
   salvarVotos();
   if (bateuMeta) atualizarRecompensasSozinho(); // desliga a recompensa de quem bateu a meta
   const total = jogos.filter(x => x[L.campo]).reduce((a, x) => a + votosDe(x, lista), 0);
-  enviar("voto", { lista, jogoId: j.id, jogo: j.nome, quem, votos: votos[j.id], total, t: Date.now() });
+  enviar("voto", { lista, jogoId: j.id, jogo: j.nome, quem, n: doJogo[quem], votos: votos[j.id], total, t: Date.now() });
   avisarEstado();
   return true;
 }
@@ -244,6 +251,7 @@ async function sincronizarNotion() {
     gravar("jogos.json", jogos);
     Object.assign(fonte, { origem: "notion", ultimaSync: Date.now(), erro: null });
     avisarEstado();
+    completarIgdb(); // jogo novo no Notion ganha os gêneros da Twitch
     completarSteam();
     if (chaveOpcoes(jogos) !== antes) atualizarRecompensasSozinho();
   } catch (e) {
@@ -280,9 +288,30 @@ async function completarSteam() {
   completando = false;
 }
 
+// gêneros pela base da Twitch (IGDB): busca quem ainda não tem ou foi buscado há mais de 30 dias
+const igdb = criarIgdb(() => conta.twitch || {});
+let completandoIgdb = false;
+async function completarIgdb() {
+  if (completandoIgdb) return;
+  completandoIgdb = true;
+  let mudou = false;
+  for (const j of jogos) {
+    const atual = igdbInfo[j.id];
+    if (atual && atual.nomeNotion === j.nome && Date.now() - atual.quando < 30 * 86400000) continue;
+    try {
+      const d = await igdb.buscar(j.nome);
+      igdbInfo[j.id] = { ...(d || { generos: [] }), nomeNotion: j.nome, quando: Date.now() };
+      mudou = true;
+    } catch (e) { console.error("Gêneros da Twitch:", e.message); break; }
+    await new Promise(r => setTimeout(r, 300)); // a IGDB aceita 4 pedidos por segundo
+  }
+  if (mudou) { gravarAgora("igdb.json", igdbInfo); avisarEstado(); }
+  completandoIgdb = false;
+}
+
 /* ---------- servidor ---------- */
 const TIPOS = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon", ".json": "application/json", ".woff2": "font/woff2", ".webp": "image/webp", ".txt": "text/plain; charset=utf-8" };
-const PAGINAS = { "/": "index.html", "/series": "series.html", "/jogos": "jogos.html", "/frequentes": "frequentes.html", "/biblioteca": "biblioteca.html", "/telao": "telao.html", "/overlay": "overlay.html" };
+const PAGINAS = { "/": "index.html", "/series": "series.html", "/jogos": "jogos.html", "/frequentes": "frequentes.html", "/biblioteca": "biblioteca.html", "/telao": "telao.html", "/telao-novo": "telao-novo.html", "/videos": "videos.html", "/links": "links.html", "/sobre": "sobre.html", "/apoie": "apoie.html", "/anuncie": "anuncie.html" };
 
 function json(res, codigo, dados) {
   res.writeHead(codigo, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" });
@@ -464,8 +493,9 @@ async function rotaAdmin(req, res, url) {
       return json(res, 200, estadoPublico());
     }
     if (r === "zerar") {
-      if (corpo.id) votacao[L.votos][corpo.id] = 0;
-      else { votacao[L.votos] = {}; votacao[L.ultimos] = []; votacao[L.zerado] = Date.now(); }
+      const pessoas = (votacao.porPessoa = votacao.porPessoa || {});
+      if (corpo.id) { votacao[L.votos][corpo.id] = 0; if (pessoas[lista]) delete pessoas[lista][corpo.id]; }
+      else { votacao[L.votos] = {}; votacao[L.ultimos] = []; votacao[L.zerado] = Date.now(); pessoas[lista] = {}; }
       if (atualizarFilas()) atualizarRecompensasSozinho(); // quem saiu da fila volta a ter recompensa
       salvarVotos(); avisarEstado();
       return json(res, 200, estadoPublico());
@@ -542,8 +572,17 @@ const servidor = http.createServer(async (req, res) => {
     return res.end();
   }
 
-  // arquivos do site
-  const arquivo = PAGINAS[url.pathname] || url.pathname.slice(1);
+  // vídeos e números: quem busca é o site na Hostinger; aqui no PC só repassa
+  if (["/api/videos.php", "/api/numeros.php", "/api/live.php"].includes(url.pathname)) {
+    try {
+      const r = await fetch(hostinger.url.replace(/placar\.php$/, url.pathname.split("/").pop()) + url.search);
+      res.writeHead(r.status, { "Content-Type": "application/json; charset=utf-8" });
+      return res.end(await r.text());
+    } catch { res.writeHead(502); return res.end("[]"); }
+  }
+
+  // arquivos do site (/jogos/nome-do-jogo abre a página do jogo)
+  const arquivo = PAGINAS[url.pathname] || (/^\/jogos\/[a-z0-9-]+\/?$/.test(url.pathname) ? "jogo.html" : url.pathname.slice(1));
   const caminho = url.pathname === "/admin" ? ADMIN_HTML : path.resolve(PUBLICO, arquivo);
   if (caminho !== ADMIN_HTML && !caminho.startsWith(PUBLICO + path.sep)) { res.writeHead(403); return res.end(); }
   fs.readFile(caminho, (err, dados) => {
@@ -567,6 +606,7 @@ servidor.listen(PORTA, "127.0.0.1", async () => {
   abrirAdmin(); // só agora, com o servidor já respondendo (antes o navegador chegava cedo e dava "conexão recusada")
   await sincronizarNotion();
   completarSteam();
+  completarIgdb();
   twitch.iniciar();
   setInterval(sincronizarNotion, 2 * 60 * 1000); // mudanças no Notion aparecem em até 2 minutos
   setTimeout(medirTwitch, 20000); // dá tempo da Twitch conectar

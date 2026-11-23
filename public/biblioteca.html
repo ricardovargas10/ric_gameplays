@@ -1,56 +1,63 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-tema="claro">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Biblioteca · Ric Gameplays</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biblioteca · Todos os jogos do canal · Ric Gameplays</title>
+<meta name="description" content="A biblioteca inteira do canal Ric Gameplays: todos os jogos que o Ric tem, quer jogar ou já jogou, com gênero, ano e se estão na votação.">
 <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
-<link rel="alternate icon" type="image/webp" href="/img/ric.webp">
 <link rel="apple-touch-icon" href="/img/ric.webp">
-<link rel="stylesheet" href="/css/site.css">
+<script src="/js/tema.js"></script>
+<link rel="stylesheet" href="/css/sistema.css">
+<script type="module" src="/js/componentes.js"></script>
 </head>
 <body>
-
-<nav class="nav" id="nav">
-  <div class="container">
-    <a class="marca" href="/"><img src="/img/ric.webp" alt="" width="36" height="36">Ric Gameplays</a>
-    <ul class="nav-links">
-      <li><a href="/series">Séries</a></li>
-      <li><a href="/frequentes">Frequentes</a></li>
-      <li><a href="/biblioteca" aria-current="page">Biblioteca</a></li>
-      <li class="menu-telao"><details><summary>Telão</summary><div class="menu-telao-opcoes">
-        <a href="/telao"><b>Séries</b><span>votação dos jogos longos</span></a>
-        <a href="/telao?lista=frequentes"><b>Frequentes</b><span>os jogos de sempre</span></a>
-      </div></details></li>
-    </ul>
-    <span class="selo" id="selo"><span class="ponto"></span><span id="seloTxt">Votação aberta</span></span>
-  </div>
-</nav>
+<ric-topo pagina="biblioteca"></ric-topo>
 
 <main>
-  <section class="hero hero-curto" id="biblioteca">
-    <div class="container">
-      <div class="eyebrow">Lista completa</div>
-      <h1 class="display">Biblioteca</h1>
-      <p class="lead">Todos os jogos que o Ric quer jogar, já jogou ou está pensando em jogar.</p>
-      <div class="barra-filtros" style="margin-top:40px">
-        <input class="busca" id="busca" type="search" placeholder="Buscar jogo" aria-label="Buscar jogo">
-        <div id="filtros" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-      </div>
-      <div class="tabela-box">
+  <section class="container pagina-topo">
+    <p class="olho">Tudo o que está na lista</p>
+    <h1 class="pagina-titulo">A biblioteca inteira do canal.</h1>
+    <p class="lead">Todos os jogos que eu tenho, quero jogar ou já joguei, com gênero, ano e se estão na votação. Dá para buscar e filtrar.</p>
+  </section>
+
+  <section class="container" style="padding-bottom: var(--e-9)">
+    <div class="biblioteca-controles">
+      <label class="busca">
+        <span class="rotulo">Buscar jogo</span>
+        <input class="campo" type="search" id="busca" placeholder="Nome do jogo" autocomplete="off">
+      </label>
+      <div class="linha" id="filtros" role="group" aria-label="Filtrar jogos"></div>
+    </div>
+    <div class="linha filtros-generos" id="generos" role="group" aria-label="Filtrar por gênero" style="margin-bottom: var(--e-5)">
+    </div>
+
+    <div class="tabela-caixa biblioteca-tabela">
+      <div class="tabela-rolagem">
         <table>
-          <thead><tr id="cabecalho"></tr></thead>
-          <tbody id="linhas"></tbody>
+          <thead>
+            <tr>
+              <th scope="col"><button type="button" class="ordenar" data-ordem="nome">Jogo</button></th>
+              <th scope="col">Gêneros</th>
+              <th scope="col"><button type="button" class="ordenar" data-ordem="ano">Lançamento</button></th>
+              <th scope="col"><button type="button" class="ordenar" data-ordem="tem">Já tem</button></th>
+              <th scope="col"><button type="button" class="ordenar" data-ordem="votacao">Na votação</button></th>
+            </tr>
+          </thead>
+          <tbody id="corpo"><tr><td colspan="5" style="color: var(--muted)">Carregando a lista…</td></tr></tbody>
         </table>
       </div>
-      <div class="contagem" id="contagem"></div>
     </div>
+    <ul class="biblioteca-lista" id="listaCelular"></ul>
+    <p class="biblioteca-conta" id="conta"></p>
   </section>
+
+  <section class="container" style="padding-bottom: var(--e-9)"><ric-discord></ric-discord></section>
+  <section class="secao-patrocinio container" style="padding-bottom: var(--e-9)"><ric-patrocinio></ric-patrocinio></section>
 </main>
 
-<footer class="rodape" id="rodape"></footer>
+<ric-rodape></ric-rodape>
 
-<script type="module" src="/js/home.js"></script>
-<script type="module" src="/js/rodape.js"></script>
+<script type="module" src="/js/pagina-biblioteca.js"></script>
 </body>
 </html>

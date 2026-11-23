@@ -13,7 +13,7 @@ const CANAIS = { gameplays: "UCeeHV2yqONpm0lqA4dCTVzg", lives: "UCknl-RBDoO-246R
 
 async function videos(canal) {
   const id = CANAIS[canal] || CANAIS.gameplays;
-  const xml = await (await fetch(`https://www.youtube.com/feeds/videos.xml?playlist_id=UULF${id.slice(2)}`)).text();
+  const xml = await (await fetch(`https://www.youtube.com/feeds/videos.xml?playlist_id=${canal === "lives" ? "UULV" : "UULF"}${id.slice(2)}`)).text();
   return xml.split("<entry>").slice(1).map(e => {
     const v = e.match(/<yt:videoId>([^<]+)/)?.[1];
     const des = s => s.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
@@ -23,6 +23,7 @@ async function videos(canal) {
 
 http.createServer(async (req, res) => {
   const url = new URL(req.url, "http://x");
+  if (url.pathname === "/api/live.php" || url.pathname === "/api/numeros.php") { try { res.writeHead(200, { "Content-Type": "application/json" }); res.end(await (await fetch("https://lives.temeron.com.br" + url.pathname)).text()); } catch { res.writeHead(502); res.end("{}"); } return; }
   if (url.pathname === "/api/videos.php") {
     try { res.writeHead(200, { "Content-Type": "application/json" }); res.end(JSON.stringify(await videos(url.searchParams.get("canal")))); }
     catch { res.writeHead(502); res.end("[]"); }
@@ -30,11 +31,25 @@ http.createServer(async (req, res) => {
   }
   if (url.pathname.startsWith("/api/")) { // placar ao vivo: o servidor de votos responde
     const p = http.request({ host: "127.0.0.1", port: 3000, path: req.url, method: req.method, headers: { ...req.headers, host: "localhost:3000" } }, r => { res.writeHead(r.statusCode, r.headers); r.pipe(res); });
-    p.on("error", () => { res.writeHead(502); res.end(); });
+    p.on("error", () => {
+      if (url.pathname !== "/api/ao-vivo") { res.writeHead(502); res.end(); return; }
+      // servidor de votos desligado: usa o placar publicado no site, no mesmo formato do servidor
+      res.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-store" });
+      let visto = 0;
+      const buscar = async () => {
+        try {
+          const d = await (await fetch("https://lives.temeron.com.br/api/placar.php?t=" + Date.now())).json();
+          if (d.atualizado !== visto && d.placar) { visto = d.atualizado; res.write(`event: estado\ndata: ${JSON.stringify({ ...d.placar, biblioteca: d.biblioteca || [] })}\n\n`); }
+        } catch {}
+      };
+      buscar();
+      const t = setInterval(buscar, 3000);
+      req.on("close", () => clearInterval(t));
+    });
     req.pipe(p);
     return;
   }
-  let arq = path.join(RAIZ, decodeURIComponent(url.pathname));
+  let arq = path.join(RAIZ, /^\/jogos\/[a-z0-9-]+\/?$/.test(url.pathname) ? "jogo.html" : decodeURIComponent(url.pathname));
   if (!arq.startsWith(RAIZ)) { res.writeHead(403); res.end(); return; }
   if (fs.existsSync(arq) && fs.statSync(arq).isDirectory()) arq = path.join(arq, "index.html");
   if (!fs.existsSync(arq) && fs.existsSync(arq + ".html")) arq += ".html";

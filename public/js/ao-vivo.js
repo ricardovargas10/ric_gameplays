@@ -36,7 +36,7 @@ async function conectarPublico({ aoEstado, aoVoto, todas }) {
       if (!primeira && (todas || lista === LISTA)) {
         ult.filter(u => u.t > ultimoVisto[lista]).reverse().forEach(u => {
           const j = bloco.opcoes.find(o => o.id === u.jogoId);
-          if (j) aoVoto?.({ lista, jogoId: u.jogoId, jogo: u.jogo, quem: u.quem, votos: j.votos, t: u.t });
+          if (j) aoVoto?.({ lista, jogoId: u.jogoId, jogo: u.jogo, quem: u.quem, n: u.n, votos: j.votos, t: u.t });
         });
       }
       ultimoVisto[lista] = Math.max(ultimoVisto[lista], ...ult.map(u => u.t), 0);

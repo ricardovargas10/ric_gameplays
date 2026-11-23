@@ -3,6 +3,10 @@ Options -Indexes
 DirectoryIndex index.html
 
 RewriteEngine On
+# página de cada jogo: /jogos/hytale abre jogo.html (o script lê o nome no endereço)
+RewriteRule ^jogos/[a-z0-9-]+/?$ jogo.html [L]
+# a antiga página Frequentes agora é uma seção da página Jogos
+RewriteRule ^frequentes/?$ /jogos#frequentes [R=301,NE,L]
 # endereços sem .html: /series abre series.html
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

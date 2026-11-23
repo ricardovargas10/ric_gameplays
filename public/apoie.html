@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apoie o canal · Ric Gameplays</title>
+<meta name="description" content="Como apoiar o Ric Gameplays: se inscrever, seguir na Twitch, usar RicPoints, mandar um LivePix ou virar sub.">
+<link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+<link rel="apple-touch-icon" href="/img/ric.webp">
+<script src="/js/tema.js"></script>
+<link rel="stylesheet" href="/css/sistema.css">
+<script type="module" src="/js/componentes.js"></script>
+</head>
+<body>
+<ric-topo></ric-topo>
+
+<main>
+  <section class="container pagina-topo">
+    <p class="olho">Apoie o canal</p>
+    <h1 class="pagina-titulo">Tem jeito de ajudar sem gastar nada.</h1>
+    <p class="lead">Assistir, se inscrever e aparecer no chat já sustentam o canal. É isso que faz o episódio chegar em mais gente, e não custa nada.</p>
+    <div class="linha">
+      <a class="botao botao--principal botao--yt" href="https://youtube.com/@ric_gameplays?sub_confirmation=1" target="_blank" rel="noopener" data-icone="youtube">Inscrever-se no canal</a>
+      <a class="botao botao--secundario botao--discord-hover" href="https://discord.gg/4jtUT4HGaC" target="_blank" rel="noopener" data-icone="discord">Entrar no Discord</a>
+    </div>
+  </section>
+
+  <section class="secao secao--cinza">
+    <div class="container">
+      <div class="secao-topo"><h2>RicPoints</h2><p class="sub">os pontos do canal na Twitch</p></div>
+      <div class="grade" style="--colunas: 2">
+        <div class="cartao">
+          <h3 class="cartao-titulo">Como ganhar</h3>
+          <ul class="lista-check">
+            <li>Assistir à live acumula pontos a cada intervalo.</li>
+            <li>Seguir o canal na Twitch entrega um bônus de uma vez.</li>
+            <li>Clicar no baú que aparece no chat durante a live.</li>
+            <li>Participar das raids e dos primeiros minutos da transmissão.</li>
+          </ul>
+        </div>
+        <div class="cartao">
+          <h3 class="cartao-titulo">Como usar</h3>
+          <div class="resgate">
+            <div class="linha" style="justify-content: space-between"><b>Série: nome da série</b><span class="pilula pilula--destaque"><span class="custo-voto">250</span>&nbsp;pontos</span></div>
+            <p>Vota na próxima série da fila. Quem bate <span class="meta-votos">40</span> votos trava a posição.</p>
+          </div>
+          <p class="resgate-nota">Os outros resgates mudam com frequência: veja a lista no chat da Twitch.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <div class="secao-topo"><h2>De graça também ajuda</h2><p class="sub">é assim que o canal cresce</p></div>
+      <div class="grade" style="--colunas: 3">
+        <div class="cartao ajuda">
+          <h3>Se inscreva no canal</h3>
+          <p>O canal de gameplays é onde os episódios ficam. Inscrição e sino contam para o alcance.</p>
+          <a class="botao botao--secundario botao--peq botao--yt" href="https://youtube.com/@ric_gameplays?sub_confirmation=1" target="_blank" rel="noopener" data-icone="youtube">@ric_gameplays</a>
+        </div>
+        <div class="cartao ajuda">
+          <h3>Siga na Twitch</h3>
+          <p>Seguir avisa você quando a live começa e acumula RicPoints enquanto você assiste.</p>
+          <a class="botao botao--secundario botao--peq botao--twitch" href="https://twitch.tv/ric_gameplays" target="_blank" rel="noopener" data-icone="twitch">ric_gameplays</a>
+        </div>
+        <div class="cartao ajuda">
+          <h3>Chame alguém</h3>
+          <p>Mandar um episódio para quem joga o mesmo jogo vale mais do que qualquer anúncio.</p>
+          <button type="button" class="botao botao--secundario botao--peq" id="compartilhar">Compartilhar o site</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--cinza">
+    <div class="container">
+      <div class="secao-topo"><h2>Se quiser ajudar mais</h2><p class="sub">nada disso é obrigatório</p></div>
+      <div class="grade" style="--colunas: 2">
+        <div class="cartao ajuda">
+          <h3>LivePix</h3>
+          <p>Pix de qualquer valor com mensagem. O alerta aparece na live na hora e eu leio em voz alta.</p>
+          <a class="botao botao--secundario botao--peq botao--livepix" href="https://livepix.gg/ricgameplays" target="_blank" rel="noopener" data-icone="livepix">Mandar um Pix</a>
+        </div>
+        <div class="cartao ajuda">
+          <h3>Virar sub na Twitch</h3>
+          <p>Assinatura mensal do canal, com emotes e chat sem anúncio. Quem tem Prime assina de graça uma vez por mês.</p>
+          <a class="botao botao--secundario botao--peq botao--twitch" href="https://twitch.tv/ric_gameplays" target="_blank" rel="noopener" data-icone="twitch">Assinar o canal</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" style="padding: var(--e-9) 0"><ric-discord texto="Estar no Discord já é apoio: é de lá que saem as sugestões de jogo e a playlist das lives."></ric-discord></section>
+</main>
+
+<ric-rodape></ric-rodape>
+<script type="module" src="/js/icones-botoes.js"></script>
+<script type="module">
+const b = document.getElementById("compartilhar");
+b.addEventListener("click", async () => {
+  const dados = { title: "Ric Gameplays", text: "Lives todo dia às 19h, e a comunidade escolhe o jogo.", url: location.origin };
+  try {
+    if (navigator.share) await navigator.share(dados);
+    else { await navigator.clipboard.writeText(dados.url); b.textContent = "Link copiado"; setTimeout(() => (b.textContent = "Compartilhar o site"), 1800); }
+  } catch {}
+});
+</script>
+</body>
+</html>

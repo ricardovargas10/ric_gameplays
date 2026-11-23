@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vídeos · Gameplays, lives e vlogs · Ric Gameplays</title>
+<meta name="description" content="Os vídeos do Ric: episódios das séries no @ric_gameplays, lives completas no @ric_lives e vlogs no @o_ricardocarvalho.">
+<link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+<link rel="apple-touch-icon" href="/img/ric.webp">
+<script src="/js/tema.js"></script>
+<link rel="stylesheet" href="/css/sistema.css">
+<script type="module" src="/js/componentes.js"></script>
+</head>
+<body>
+<ric-topo pagina="videos"></ric-topo>
+
+<main>
+  <section class="container pagina-topo">
+    <p class="olho">Os vídeos do canal</p>
+    <h1 class="pagina-titulo">Gameplays, lives e vlogs, cada um no seu canal.</h1>
+    <p class="lead">Os episódios das séries saem no canal de gameplays. As lives completas ficam no Ric Lives e a vida fora do jogo vai para o canal de vlogs.</p>
+    <div class="linha"><a class="botao botao--principal botao--yt" href="https://youtube.com/@ric_gameplays?sub_confirmation=1" target="_blank" rel="noopener" id="btnInscrever">Inscrever-se no @ric_gameplays</a></div>
+  </section>
+
+  <section class="secao secao--cinza">
+    <div class="container">
+      <div class="secao-topo"><h2>Gameplays</h2><p class="sub">os episódios das séries e dos jogos de sempre</p><a class="acao" href="https://youtube.com/@ric_gameplays" target="_blank" rel="noopener">Abrir @ric_gameplays →</a></div>
+      <div class="grade" style="--colunas: 3" data-canal="gameplays" data-quantos="6"></div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <div class="secao-topo"><h2>Lives</h2><p class="sub">as transmissões completas, do jeito que foram ao ar</p><a class="acao" href="https://youtube.com/@ric_lives" target="_blank" rel="noopener">Abrir @ric_lives →</a></div>
+      <div class="grade" style="--colunas: 3" data-canal="lives" data-quantos="3"></div>
+    </div>
+  </section>
+
+  <section class="secao secao--cinza">
+    <div class="container">
+      <div class="secao-topo"><h2>Vlogs</h2><p class="sub">a vida fora do jogo</p><a class="acao" href="https://youtube.com/@o_ricardocarvalho" target="_blank" rel="noopener">Abrir @o_ricardocarvalho →</a></div>
+      <div class="grade" style="--colunas: 3" data-canal="vlogs" data-quantos="3"></div>
+    </div>
+  </section>
+
+  <section class="container" style="padding: var(--e-9) 0"><ric-discord></ric-discord></section>
+  <section class="secao-patrocinio container" style="padding-bottom: var(--e-9)"><ric-patrocinio></ric-patrocinio></section>
+</main>
+
+<ric-rodape></ric-rodape>
+
+<script type="module">
+import { ICONES } from "/js/componentes.js";
+import { videos, cartaoVideo } from "/js/util.js";
+document.getElementById("btnInscrever").insertAdjacentHTML("afterbegin", ICONES.youtube);
+document.querySelectorAll("[data-canal]").forEach(async box => {
+  const lista = await videos(box.dataset.canal);
+  box.innerHTML = lista.length
+    ? lista.slice(0, Number(box.dataset.quantos)).map(cartaoVideo).join("")
+    : `<p style="color: var(--muted)">Os vídeos não carregaram agora.</p>`;
+});
+</script>
+</body>
+</html>
