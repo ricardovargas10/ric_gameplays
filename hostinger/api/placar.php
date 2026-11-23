@@ -26,8 +26,8 @@ $fp = fopen($arquivo, 'c+');
 flock($fp, LOCK_EX);
 $atual = json_decode(stream_get_contents($fp), true) ?: [];
 foreach ($novo['linhas'] as $l) {
-  // só as duas linhas que o site usa
-  if (isset($l['id']) && in_array($l['id'], ['placar', 'biblioteca'], true)) $atual[$l['id']] = $l['dados'] ?? null;
+  // só as linhas que o site usa
+  if (isset($l['id']) && in_array($l['id'], ['placar', 'biblioteca', 'numeros'], true)) $atual[$l['id']] = $l['dados'] ?? null;
 }
 $atual['atualizado'] = (int) round(microtime(true) * 1000);
 ftruncate($fp, 0);

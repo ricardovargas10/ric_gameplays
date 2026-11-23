@@ -328,12 +328,55 @@ function checarAdmin(req, url) {
   return null;
 }
 
+/* ---------- números do canal (página Anuncie) ----------
+   Twitch: seguidores pela API e, a cada 5 min com a live no ar, quantas pessoas assistem (vira média e horas do mês).
+   Instagram: a rede não deixa ler sem login, então os números são digitados no admin.
+   Discord, YouTube e TikTok o próprio site busca (api/numeros.php na Hostinger). */
+const numeros = ler("numeros.json", {});
+numeros.meses = numeros.meses || {};
+numeros.instagram = numeros.instagram || {};
+// até ter um mês inteiro medido aqui, vale o que o painel da Twitch mostrou (set a nov de 2026)
+numeros.base = numeros.base || { mediaEspectadores: 2.8, horasMes: 88, periodo: "set a nov de 2026" };
+const AMOSTRA_MIN = 5;
+const mesDe = d => d.toISOString().slice(0, 7);
+function resumoTwitch() {
+  const atual = mesDe(new Date());
+  // meses completos com pelo menos 10 h de live medidas; vale a média dos 3 últimos
+  const medidos = Object.entries(numeros.meses).filter(([m, v]) => m < atual && v.minutos >= 600).sort().slice(-3).map(([, v]) => v);
+  if (!medidos.length) return { seguidores: numeros.twitchSeguidores ?? null, mediaEspectadores: numeros.base.mediaEspectadores, horasMes: numeros.base.horasMes, fonte: "painel da Twitch, " + numeros.base.periodo };
+  const amostras = medidos.reduce((a, v) => a + v.amostras, 0);
+  const soma = medidos.reduce((a, v) => a + v.soma, 0);
+  return {
+    seguidores: numeros.twitchSeguidores ?? null,
+    mediaEspectadores: Math.round((soma / amostras) * 10) / 10,
+    horasMes: Math.round(medidos.reduce((a, v) => a + v.minutos, 0) / medidos.length / 60),
+    fonte: `medido nos últimos ${medidos.length} ${medidos.length === 1 ? "mês" : "meses"}`
+  };
+}
+function publicarNumeros() {
+  publicadorHostinger.publicar("numeros", { twitch: resumoTwitch(), instagram: numeros.instagram, atualizado: Date.now() });
+}
+async function medirTwitch() {
+  try {
+    const n = await twitch.numerosCanal();
+    if (!n) return;
+    if (n.seguidores != null) numeros.twitchSeguidores = n.seguidores;
+    if (n.aoVivo) {
+      const m = (numeros.meses[mesDe(new Date())] = numeros.meses[mesDe(new Date())] || { amostras: 0, soma: 0, minutos: 0 });
+      m.amostras++; m.soma += n.espectadores; m.minutos += AMOSTRA_MIN;
+    }
+    gravarAgora("numeros.json", numeros);
+    publicarNumeros();
+  } catch (e) { console.error("Números da Twitch:", e.message); }
+}
+
 function estadoAdmin() {
   return {
     twitch: { ...twitch.status(), temClientId: !!conta.twitch.clientId, temSecret: !!conta.twitch.clientSecret, clientId: conta.twitch.clientId || "", custo: conta.twitch.custo || null, custoEntre: LISTAS.entre.custo(), metaSeries: LISTAS.principal.metaFixaVotos(), metaCurtos: LISTAS.entre.metaFixaVotos(), redirect: `${BASE}/auth/callback` },
     notion: { configurado: !!conta.notion.token, databaseId: conta.notion.databaseId || DATABASE_PADRAO, ...fonte },
     hostinger: { url: hostinger.url, chaveHash: crypto.createHash("sha256").update(hostinger.chave).digest("hex"), ...publicadorHostinger.status() },
     supabase: { url: conta.supabase.url || "", temSecreta: !!conta.supabase.secreta, temPublica: !!conta.supabase.publica, ...publicador.status() },
+    numeros: { instagram: numeros.instagram, twitch: resumoTwitch() },
     links: { site: BASE + "/", telao: BASE + "/telao", overlay: BASE + "/overlay", telaoEntre: BASE + "/telao?lista=entre", overlayEntre: BASE + "/overlay?lista=entre" },
     steam: jogos.filter(j => j.opcao || j.entreLives).map(j => ({ id: j.id, nome: j.nome, appId: steamInfo[j.id]?.appId || null, nomeSteam: steamInfo[j.id]?.nomeSteam || null, manual: conta.steamManual[j.id] || null }))
   };
@@ -349,6 +392,14 @@ async function rotaAdmin(req, res, url) {
       if (typeof corpo.clientId === "string" && corpo.clientId.trim()) conta.twitch.clientId = corpo.clientId.trim();
       if (typeof corpo.clientSecret === "string" && corpo.clientSecret.trim()) conta.twitch.clientSecret = corpo.clientSecret.trim();
       salvarConta();
+      return json(res, 200, estadoAdmin());
+    }
+    if (r === "numeros") {
+      const ig = corpo.instagram || {};
+      const num = v => (v === "" || v == null ? null : Math.max(0, Math.round(Number(v)) || 0));
+      numeros.instagram = { seguidores: num(ig.seguidores), visualizacoes30: num(ig.visualizacoes30), alcance30: num(ig.alcance30), interacoes30: num(ig.interacoes30), atualizado: Date.now() };
+      gravarAgora("numeros.json", numeros);
+      publicarNumeros();
       return json(res, 200, estadoAdmin());
     }
     if (r === "twitch/desconectar") { twitch.desconectar(); return json(res, 200, estadoAdmin()); }
@@ -518,6 +569,8 @@ servidor.listen(PORTA, "127.0.0.1", async () => {
   completarSteam();
   twitch.iniciar();
   setInterval(sincronizarNotion, 2 * 60 * 1000); // mudanças no Notion aparecem em até 2 minutos
+  setTimeout(medirTwitch, 20000); // dá tempo da Twitch conectar
+  setInterval(medirTwitch, AMOSTRA_MIN * 60 * 1000);
 });
 
 // Ctrl+C, fechar a janela no X (SIGHUP) e desligar o PC: grava tudo antes de sair

@@ -28,8 +28,15 @@ if (temRemota) {
 
 // troca todo o conteúdo pelo site atual
 for (const f of fs.readdirSync(PASTA)) if (f !== ".git") fs.rmSync(path.join(PASTA, f), { recursive: true, force: true });
-fs.cpSync(path.join(RAIZ, "public"), PASTA, { recursive: true, filter: f => !f.endsWith("config-publico.js") });
-fs.cpSync(path.join(RAIZ, "hostinger"), PASTA, { recursive: true });
+// só vai para o site o que está salvo no git (commit): mudança em teste no PC não sai sem querer
+const SALVO = path.join(os.tmpdir(), "ric-votacao-salvo");
+fs.rmSync(SALVO, { recursive: true, force: true });
+fs.mkdirSync(SALVO);
+execFileSync("git", ["archive", "--format=tar", "-o", path.join(SALVO, "site.tar"), "HEAD", "public", "hostinger"], { cwd: RAIZ });
+execFileSync("tar", ["-xf", "site.tar"], { cwd: SALVO });
+fs.cpSync(path.join(SALVO, "public"), PASTA, { recursive: true, filter: f => !f.endsWith("config-publico.js") });
+fs.cpSync(path.join(SALVO, "hostinger"), PASTA, { recursive: true });
+fs.rmSync(SALVO, { recursive: true, force: true });
 fs.writeFileSync(path.join(PASTA, ".gitignore"), "api/dados/\n");
 
 git(["add", "-A"], PASTA);

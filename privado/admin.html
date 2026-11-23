@@ -141,6 +141,21 @@
       </div>
     </section>
 
+    <section class="bloco">
+      <h2>Números do Instagram</h2>
+      <p>O Instagram não deixa o site ler os números sozinho. Copie do painel do Instagram (últimos 30 dias) quando quiser atualizar a página Anuncie. Twitch, YouTube, TikTok e Discord atualizam sozinhos.</p>
+      <label for="igSeguidores">Seguidores</label>
+      <input class="campo" id="igSeguidores" type="number" min="0">
+      <label for="igVisualizacoes">Visualizações (30 dias)</label>
+      <input class="campo" id="igVisualizacoes" type="number" min="0">
+      <label for="igAlcance">Contas alcançadas (30 dias)</label>
+      <input class="campo" id="igAlcance" type="number" min="0">
+      <label for="igInteracoes">Interações (30 dias)</label>
+      <input class="campo" id="igInteracoes" type="number" min="0">
+      <div class="dica" id="twNumeros"></div>
+      <div class="acoes"><button class="btn primario" id="salvarInstagram">Salvar números</button></div>
+    </section>
+
     <section class="bloco largo">
       <h2>Site público</h2>
       <p>Manda o placar para o Supabase, e o site na Vercel mostra ao vivo para quem estiver fora do seu PC. No Supabase: Project Settings > API Keys (chaves) e Data API (URL).</p>
@@ -222,6 +237,13 @@ function renderAdmin() {
   if (tw.custoEntre && !$("custoEntre").value) $("custoEntre").value = tw.custoEntre;
   if (tw.metaSeries && !$("metaSeries").value) $("metaSeries").value = tw.metaSeries;
   if (tw.metaCurtos && !$("metaCurtos").value) $("metaCurtos").value = tw.metaCurtos;
+
+  const ig = admin.numeros?.instagram || {};
+  [["igSeguidores", "seguidores"], ["igVisualizacoes", "visualizacoes30"], ["igAlcance", "alcance30"], ["igInteracoes", "interacoes30"]].forEach(([id, k]) => {
+    if (document.activeElement !== $(id) && !$(id).value && ig[k] != null) $(id).value = ig[k];
+  });
+  const tn = admin.numeros?.twitch;
+  if (tn) $("twNumeros").textContent = `Twitch: ${tn.seguidores ?? "?"} seguidores · média de ${tn.mediaEspectadores} espectadores · ${tn.horasMes} h ao vivo por mês (${tn.fonte})`;
 
   const sb = admin.supabase;
   if (!sb.ativo) estadoBox("sbEstado", "sbTxt", "", "Não configurado. O site só funciona no seu PC.");
@@ -306,6 +328,12 @@ $("simular12").onclick = () => post("simular", { quantidade: 12 });
 $("zerarTudo").onclick = () => confirm("Zerar os votos de todos os jogos?") && post("zerar");
 $("simularEntre").onclick = () => post("simular", { quantidade: 12, lista: "entre" });
 $("zerarEntre").onclick = () => confirm("Zerar os votos de todos os jogos entre lives?") && post("zerar", { lista: "entre" });
+$("salvarInstagram").onclick = async () => {
+  try {
+    admin = await post("numeros", { instagram: { seguidores: $("igSeguidores").value, visualizacoes30: $("igVisualizacoes").value, alcance30: $("igAlcance").value, interacoes30: $("igInteracoes").value } });
+    renderAdmin(); toast("Números do Instagram salvos");
+  } catch (e) { toast(e.message); }
+};
 $("salvarNotion").onclick = async e => {
   e.target.disabled = true;
   try { admin = await post("notion", { token: $("notionToken").value, databaseId: $("databaseId").value }); $("notionToken").value = ""; renderAdmin(); toast(admin.notion.erro ? "Notion: " + admin.notion.erro : "Notion conectado"); }
