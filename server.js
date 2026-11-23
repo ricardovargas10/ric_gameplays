@@ -368,12 +368,13 @@ numeros.instagram = numeros.instagram || {};
 numeros.base = numeros.base || { mediaEspectadores: 2.8, horasMes: 88, periodo: "set a nov de 2026" };
 // pico de cada live (o maior número de pessoas assistindo ao mesmo tempo); até ter 5 lives medidas, vale o que o Ric informou
 numeros.base.picoMedio = numeros.base.picoMedio ?? 8;
+numeros.base.maiorPico = numeros.base.maiorPico ?? 12; // pico que o Ric bate seguido
 numeros.picos = numeros.picos || []; // [{ data, pico }] das últimas lives
 const AMOSTRA_MIN = 5;
 const mesDe = d => d.toISOString().slice(0, 7);
 function picos() {
   const lista = numeros.picos.slice(-20).map(p => p.pico); // últimas 20 lives
-  if (lista.length < 5) return { picoMedio: numeros.base.picoMedio, maiorPico: lista.length ? Math.max(...lista) : null };
+  if (lista.length < 5) return { picoMedio: numeros.base.picoMedio, maiorPico: Math.max(numeros.base.maiorPico, ...lista) };
   return { picoMedio: Math.round(lista.reduce((a, b) => a + b, 0) / lista.length), maiorPico: Math.max(...lista) };
 }
 function resumoTwitch() {

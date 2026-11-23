@@ -54,7 +54,7 @@ if (!is_file($cache) || time() - filemtime($cache) > 6 * 3600) {
 // o que o PC mandou (Twitch e Instagram)
 $estado = is_file("$dados/estado.json") ? (json_decode(file_get_contents("$dados/estado.json"), true) ?: []) : [];
 $doPc = $estado['numeros'] ?? [];
-if (isset($doPc['twitch']) && !isset($doPc['twitch']['picoMedio'])) $doPc['twitch']['picoMedio'] = 8; // pico por live informado pelo Ric, até o PC medir
+if (isset($doPc['twitch']) && empty($doPc['twitch']['maiorPico'])) $doPc['twitch']['maiorPico'] = 12; // pico informado pelo Ric, até o PC medir 5 lives
 
 echo json_encode([
   'discord' => $publico['discord'] ?? null,
