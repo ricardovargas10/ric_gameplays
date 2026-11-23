@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Links · Ric Gameplays</title>
+<meta name="description" content="Todos os links do Ric Gameplays: Twitch, YouTube, redes sociais, Discord e playlist dos inscritos.">
+<link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+<link rel="apple-touch-icon" href="/img/ric.webp">
+<script src="/js/tema.js"></script>
+<link rel="stylesheet" href="/css/sistema.css">
+<script type="module" src="/js/componentes.js"></script>
+</head>
+<body class="pagina-links">
+<div class="links-tema"><ric-tema></ric-tema></div>
+
+<main class="links">
+  <header class="links-cabeca">
+    <img src="/img/logo-canal.webp" alt="Ícone do canal: ilustração do rosto do Ric" width="112" height="112" class="links-foto">
+    <h1>Bem-vindo ao Ric Gameplays!</h1>
+    <p>Gameplays e lives todo dia às 19h. A comunidade escolhe o jogo.</p>
+  </header>
+
+  <!-- último vídeo do @ric_gameplays; com a live da Twitch no ar, vira o cartão "Ao vivo agora" -->
+  <p class="links-grupo" id="grupoDestaque">Assista meu último vídeo</p>
+  <a class="link-video link-destaque" id="destaque" href="https://youtube.com/@ric_gameplays" target="_blank" rel="noopener">
+    <span class="capa" style="border: 0; border-radius: 0"><span class="capa-reserva">Último vídeo</span></span>
+    <span class="link-corpo">
+      <span class="link-icone" data-icone="youtube" id="destaqueIcone"></span>
+      <span class="link-textos"><b id="destaqueTitulo">Último vídeo do canal</b><span id="destaqueSub">no canal @ric_gameplays</span></span>
+      <span class="link-seta">→</span>
+    </span>
+    <span class="brilho" aria-hidden="true"></span>
+  </a>
+
+  <p class="links-grupo">Ao vivo todo dia às 19h</p>
+  <div class="links-pilha">
+    <a class="link link--twitch" href="https://twitch.tv/ric_gameplays" target="_blank" rel="noopener"><span class="link-icone link-icone--preto" data-icone="twitch"></span><span class="link-textos"><b>Twitch</b><span>twitch.tv/ric_gameplays</span></span><span class="link-seta">→</span></a>
+    <a class="link link--yt" href="https://youtube.com/@ric_lives" target="_blank" rel="noopener"><span class="link-icone" data-icone="youtube"></span><span class="link-textos"><b>Canal de Lives</b><span>@ric_lives</span></span><span class="link-seta">→</span></a>
+  </div>
+
+  <p class="links-grupo">Assista</p>
+  <div class="links-pilha">
+    <a class="link link--yt" href="https://youtube.com/@ric_gameplays" target="_blank" rel="noopener"><span class="link-icone" data-icone="youtube"></span><span class="link-textos"><b>Canal de Gameplays</b><span>@ric_gameplays</span></span><span class="link-seta">→</span></a>
+    <a class="link link--yt" href="https://youtube.com/@o_ricardocarvalho" target="_blank" rel="noopener"><span class="link-icone" data-icone="youtube"></span><span class="link-textos"><b>Canal de Vlogs</b><span>@o_ricardocarvalho</span></span><span class="link-seta">→</span></a>
+  </div>
+
+  <p class="links-grupo">Me siga nas redes!</p>
+  <div class="links-pilha">
+    <a class="link link--instagram" href="https://instagram.com/ric_gameplays" target="_blank" rel="noopener"><span class="link-icone" data-icone="instagram"></span><span class="link-textos"><b>Instagram</b><span>ric_gameplays</span></span><span class="link-seta">→</span></a>
+    <a class="link link--tiktok" href="https://tiktok.com/@ric_gameplays" target="_blank" rel="noopener"><span class="link-icone" data-icone="tiktok"></span><span class="link-textos"><b>TikTok</b><span>@ric_gameplays</span></span><span class="link-seta">→</span></a>
+    <a class="link link--x" href="https://x.com/ric_gameplays" target="_blank" rel="noopener"><span class="link-icone" data-icone="x"></span><span class="link-textos"><b>X (Twitter)</b><span>ric_gameplays</span></span><span class="link-seta">→</span></a>
+    <a class="link link--threads" href="https://www.threads.com/@ric_gameplays" target="_blank" rel="noopener"><span class="link-icone" data-icone="threads"></span><span class="link-textos"><b>Threads</b><span>@ric_gameplays</span></span><span class="link-seta">→</span></a>
+  </div>
+
+  <p class="links-grupo">Comunidade</p>
+  <div class="links-pilha">
+    <a class="link link--discord link-destaque" href="https://discord.gg/4jtUT4HGaC" target="_blank" rel="noopener"><span class="link-icone link-icone--discord" data-icone="discord"></span><span class="link-textos"><b>Discord</b><span>Entre para a nossa comunidade</span></span><span class="link-seta">→</span><span class="brilho" aria-hidden="true"></span><span class="pulso" aria-hidden="true"></span></a>
+    <a class="link link--spotify" href="https://open.spotify.com/playlist/2mQninpIxtRe11WPOM6ceH" target="_blank" rel="noopener"><span class="link-icone" data-icone="spotify"></span><span class="link-textos"><b>Playlist dos Inscritos</b><span>no Spotify</span></span><span class="link-seta">→</span></a>
+    <a class="link link--site" href="/"><span class="link-icone" data-icone="site"></span><span class="link-textos"><b>Site</b><span>votação, jogos e biblioteca do canal</span></span><span class="link-seta">→</span></a>
+  </div>
+
+  <p class="links-horario"><span class="ponto"></span>Live todos os dias às 19h!</p>
+
+  <div class="cartao cartao--peq links-sobre">
+    <p class="rotulo">Sobre o Ric</p>
+    <p>Faço lives, vlogs e jogo pela internet alheia! Me siga nas redes sociais e entre para a minha comunidade!</p>
+  </div>
+
+  <p class="links-rodape">@ric_gameplays · <span id="ano">2026</span></p>
+</main>
+
+<script type="module" src="/js/icones-botoes.js"></script>
+<script type="module">
+import { videos } from "/js/util.js";
+import { esc, ICONES } from "/js/componentes.js";
+const $ = id => document.getElementById(id);
+$("ano").textContent = new Date().getFullYear();
+
+// mesma lógica do link na bio: com a live no ar, o destaque vira "Ao vivo agora"; fora dela, o último vídeo
+async function atualizar() {
+  let live = null;
+  try { live = await (await fetch("/api/live.php", { cache: "no-store" })).json(); } catch {}
+  const a = $("destaque");
+  if (live?.aoVivo) {
+    a.classList.add("live-card");
+    a.href = live.url;
+    $("grupoDestaque").innerHTML = `<span class="live-dot"></span> Ao vivo agora na Twitch`;
+    a.querySelector(".capa").innerHTML = `<span class="capa-reserva">Ao vivo</span><img src="${esc(live.thumb)}" alt="">`;
+    $("destaqueIcone").className = "link-icone link-icone--preto";
+    $("destaqueIcone").innerHTML = ICONES.twitch;
+    $("destaqueTitulo").textContent = live.titulo || "Ao vivo agora";
+    $("destaqueSub").textContent = live.jogo ? `jogando ${live.jogo}` : "twitch.tv/ric_gameplays";
+    return;
+  }
+  a.classList.remove("live-card");
+  $("grupoDestaque").textContent = "Assista meu último vídeo";
+  $("destaqueIcone").className = "link-icone";
+  $("destaqueIcone").innerHTML = ICONES.youtube;
+  const [v] = await videos("gameplays");
+  if (!v) return;
+  a.href = v.url;
+  a.querySelector(".capa").innerHTML = `<span class="capa-reserva">Último vídeo</span><img src="${esc(v.thumb.replace("hqdefault", "maxresdefault"))}" alt="" data-reserva="${esc(v.thumb)}">`;
+  $("destaqueTitulo").textContent = v.titulo;
+  $("destaqueSub").textContent = "no canal @ric_gameplays";
+}
+atualizar();
+setInterval(atualizar, 90000); // a live pode começar com a página aberta
+</script>
+</body>
+</html>

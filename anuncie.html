@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anuncie no canal · Ric Gameplays</title>
+<meta name="description" content="Anuncie no canal Ric Gameplays: espaço no site, menção na live, integração no vídeo e ações com a comunidade. Números atualizados e contato.">
+<link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+<link rel="apple-touch-icon" href="/img/ric.webp">
+<script src="/js/tema.js"></script>
+<link rel="stylesheet" href="/css/sistema.css">
+<script type="module" src="/js/componentes.js"></script>
+</head>
+<body>
+<ric-topo pagina="anuncie"></ric-topo>
+
+<main>
+  <section class="container pagina-topo">
+    <p class="olho">Para marcas</p>
+    <h1 class="pagina-titulo">Anuncie no canal.</h1>
+    <p class="lead">Uma audiência que aparece no mesmo horário todo dia e decide junto o que vai ser jogado. O patrocínio aparece no site, na live e nos vídeos, sempre com o selo de Patrocínio.</p>
+    <div class="linha"><a class="botao botao--principal" href="mailto:ricchico.games@gmail.com">Falar comigo por e-mail</a></div>
+  </section>
+
+  <section class="secao secao--cinza">
+    <div class="container">
+      <div class="secao-topo"><h2>Formatos</h2><p class="sub">valores sob consulta</p></div>
+      <div class="grade" style="--colunas: 2">
+        <div class="cartao ajuda"><h3>Espaço de patrocínio no site</h3><p>Bloco fixo na página inicial e nas páginas de jogos, com selo de Patrocínio.</p><p class="formato-valor">Sob consulta</p></div>
+        <div class="cartao ajuda"><h3>Menção na live</h3><p>Leitura ao vivo durante a transmissão das 19h, com link no chat.</p><p class="formato-valor">Sob consulta</p></div>
+        <div class="cartao ajuda"><h3>Integração no vídeo</h3><p>Bloco gravado dentro do episódio publicado no canal de gameplays.</p><p class="formato-valor">Sob consulta</p></div>
+        <div class="cartao ajuda"><h3>Ação com a comunidade</h3><p>Sorteio, chave de jogo ou desafio combinado com o Discord.</p><p class="formato-valor">Sob consulta</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <div class="secao-topo"><h2>Números do canal</h2></div>
+      <div class="grade numeros" style="--colunas: 4">
+        <div class="cartao numero"><p class="numero-valor" data-numero="twitch.mediaEspectadores">—</p><p class="numero-rotulo">Média de espectadores</p></div>
+        <div class="cartao numero"><p class="numero-valor" data-numero="youtube.ric_gameplays">—</p><p class="numero-rotulo">Inscritos no @ric_gameplays</p></div>
+        <div class="cartao numero"><p class="numero-valor" data-numero="twitch.seguidores">—</p><p class="numero-rotulo">Seguidores na Twitch</p></div>
+        <div class="cartao numero"><p class="numero-valor" data-numero="twitch.horasMes" data-sufixo="h">—</p><p class="numero-rotulo">Horas ao vivo por mês</p></div>
+      </div>
+      <p class="rotulo" style="margin: var(--e-7) 0 var(--e-4)">Nas redes</p>
+      <div class="grade numeros numeros--peq" style="--colunas: 3">
+        <div class="cartao numero"><p class="numero-valor" data-numero="instagram.visualizacoes30">—</p><p class="numero-rotulo">Visualizações no Instagram em 30 dias</p></div>
+        <div class="cartao numero"><p class="numero-valor" data-numero="instagram.alcance30">—</p><p class="numero-rotulo">Contas alcançadas no Instagram em 30 dias</p></div>
+        <div class="cartao numero"><p class="numero-valor" data-numero="instagram.seguidores">—</p><p class="numero-rotulo">Seguidores no Instagram</p></div>
+        <div class="cartao numero"><p class="numero-valor" data-numero="tiktok">—</p><p class="numero-rotulo">Seguidores no TikTok</p></div>
+        <div class="cartao numero"><p class="numero-valor" data-numero="discord">—</p><p class="numero-rotulo">Membros no Discord</p></div>
+        <div class="cartao numero"><p class="numero-valor" data-numero="youtube.ric_lives">—</p><p class="numero-rotulo">Inscritos no @ric_lives</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" style="padding-bottom: var(--e-9)">
+    <div class="faixa-conversa">
+      <div style="flex: 999 1 420px; min-width: 0">
+        <h2>Vamos conversar</h2>
+        <p>Me conte a marca, o período e o formato que você tem em mente. Respondo com o mídia kit completo.</p>
+      </div>
+      <a class="botao botao--claro" href="mailto:ricchico.games@gmail.com">ricchico.games@gmail.com</a>
+    </div>
+  </section>
+</main>
+
+<ric-rodape></ric-rodape>
+<script type="module">
+import { contar } from "/js/animacoes.js";
+const fmt = new Intl.NumberFormat("pt-BR");
+try {
+  const d = await (await fetch("/api/numeros.php")).json();
+  document.querySelectorAll("[data-numero]").forEach(el => {
+    const v = el.dataset.numero.split(".").reduce((o, k) => o?.[k], d);
+    if (v == null) { el.closest(".numero").hidden = true; return; }
+    const sufixo = el.dataset.sufixo || "";
+    if (!Number.isInteger(v)) { el.textContent = String(v).replace(".", ",") + sufixo; return; }
+    // números grandes ficam com ponto de milhar; os pequenos contam até o valor
+    if (v >= 1000) el.textContent = fmt.format(v) + sufixo;
+    else { el.dataset.valor = 0; contar(el, v, sufixo); }
+  });
+} catch {}
+</script>
+</body>
+</html>

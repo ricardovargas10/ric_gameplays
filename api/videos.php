@@ -19,8 +19,8 @@ if (!is_file($dados . '/.htaccess')) file_put_contents($dados . '/.htaccess', "R
 $cache = "$dados/videos-$canal.json";
 if (is_file($cache) && time() - filemtime($cache) < 900) { readfile($cache); exit; }
 
-// lista "UULF" = só os vídeos longos do canal
-$url = 'https://www.youtube.com/feeds/videos.xml?playlist_id=UULF' . substr($CANAIS[$canal], 2);
+// lista "UULF" = só os vídeos longos do canal; no canal de lives, "UULV" = só as transmissões
+$url = 'https://www.youtube.com/feeds/videos.xml?playlist_id=' . ($canal === 'lives' ? 'UULV' : 'UULF') . substr($CANAIS[$canal], 2);
 $ch = curl_init($url);
 curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 8, CURLOPT_FOLLOWLOCATION => true, CURLOPT_USERAGENT => 'Mozilla/5.0']);
 $xml = curl_exec($ch);

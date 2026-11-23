@@ -1,67 +1,89 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-tema="claro">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ric Gameplays · Votação</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ric Gameplays · Lives todo dia às 19h</title>
+<meta name="description" content="Canal de gameplays e lives do Ric, todo dia às 19h na Twitch e no YouTube. A comunidade escolhe a próxima série com RicPoints.">
 <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
-<link rel="alternate icon" type="image/webp" href="/img/ric.webp">
 <link rel="apple-touch-icon" href="/img/ric.webp">
-<link rel="stylesheet" href="/css/site.css">
+<script src="/js/tema.js"></script>
+<link rel="stylesheet" href="/css/sistema.css">
+<script type="module" src="/js/componentes.js"></script>
 </head>
 <body>
-
-<nav class="nav" id="nav">
-  <div class="container">
-    <a class="marca" href="/"><img src="/img/ric.webp" alt="" width="36" height="36">Ric Gameplays</a>
-    <ul class="nav-links">
-      <li><a href="/series">Séries</a></li>
-      <li><a href="/frequentes">Frequentes</a></li>
-      <li><a href="/biblioteca">Biblioteca</a></li>
-      <li class="menu-telao"><details><summary>Telão</summary><div class="menu-telao-opcoes">
-        <a href="/telao"><b>Séries</b><span>votação dos jogos longos</span></a>
-        <a href="/telao?lista=frequentes"><b>Frequentes</b><span>os jogos de sempre</span></a>
-      </div></details></li>
-    </ul>
-    <span class="selo" id="selo"><span class="ponto"></span><span id="seloTxt">Votação aberta</span></span>
-  </div>
-</nav>
+<ric-topo pagina="inicio"></ric-topo>
 
 <main>
-  <section class="hero">
-    <div class="container">
-      <div class="eyebrow">Votação com RicPoints</div>
-      <h1 class="display">O que o Ric vai jogar?</h1>
-      <p class="lead">Você escolhe com os RicPoints da Twitch. Cada jogo tem uma meta de votos: quando a meta bate, o jogo entra na fila.</p>
-      <div class="botoes"><a class="botao" href="/telao"><span class="ponto-vivo"></span>Telão das séries</a><a class="botao secundario" href="/telao?lista=frequentes">Telão dos frequentes</a></div>
+  <div class="container">
+    <section class="hero">
+      <div class="hero-texto">
+        <p class="olho">Canal de gameplays e lives</p>
+        <h1>Todo dia às 19h,<br>com a comunidade escolhendo o jogo.</h1>
+        <p class="lead">Séries longas, jogos de sempre e votação com RicPoints. Quem assiste decide o que vem depois.</p>
+        <div class="linha">
+          <a class="botao botao--principal botao--twitch" href="https://twitch.tv/ric_gameplays" target="_blank" rel="noopener" id="btnTwitch">Assistir ao vivo na Twitch</a>
+          <a class="botao botao--secundario botao--yt" href="https://youtube.com/@ric_gameplays" target="_blank" rel="noopener" id="btnYt">Vídeos no @ric_gameplays</a>
+        </div>
+      </div>
+      <div class="hero-figura"><div><img src="/img/logo-canal.webp" alt="Ícone do canal: ilustração do rosto do Ric" width="760" height="760"></div></div>
+    </section>
 
-      <div class="caixas">
-        <a class="caixa" href="/series">
-          <div class="capa caixa-capa" id="capaSeries"></div>
-          <div class="corpo">
-            <div class="eyebrow">Jogos longos</div>
-            <h2 class="display">Séries</h2>
-            <p>Jogos de história, jogados em vários episódios. Resgate <span class="chip-voto">Série: nome</span> com RicPoints na Twitch.</p>
-            <span class="caixa-link">Ver a votação das séries →</span>
-          </div>
-        </a>
-        <a class="caixa" href="/frequentes">
-          <div class="capa caixa-capa" id="capaFrequentes"></div>
-          <div class="corpo">
-            <div class="eyebrow">Sempre no canal</div>
-            <h2 class="display">Frequentes</h2>
-            <p>Os jogos que o Ric joga sempre ou de vez em quando. Esses não entram na votação: aparecem nas lives de qualquer jeito.</p>
-            <span class="caixa-link">Ver os frequentes →</span>
-          </div>
-        </a>
+    <ric-discord></ric-discord>
+  </div>
+
+  <section class="secao secao--cinza" style="margin-top: var(--e-9)">
+    <div class="container">
+      <div class="secao-topo">
+        <h2>Últimos vídeos</h2>
+        <p class="sub">do canal @ric_gameplays</p>
+        <a class="acao" href="/videos">Ver todos os vídeos →</a>
+      </div>
+      <div class="grade" style="--colunas: 3" id="videos"></div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <div class="cartao">
+        <div class="secao-topo" style="margin-bottom: 10px">
+          <h2>Votação da próxima série</h2>
+          <span class="selo selo--peq"><span class="ponto"></span>Placar ao vivo</span>
+          <a class="acao" href="/series">Abrir o placar →</a>
+        </div>
+        <p style="color: var(--muted); margin-bottom: var(--e-7)">Resgate <strong style="color: var(--text); font-weight: 600">"Série: nome da série"</strong> por 250 RicPoints na Twitch. A primeira a bater <span class="meta-votos">40</span> votos trava a posição e entra na fila.</p>
+        <div class="pilha" style="gap: var(--e-5)" id="votacao"><p style="color: var(--muted)">Carregando o placar…</p></div>
+        <div class="ultimos" id="ultimosBox" hidden>
+          <span class="ultimos-rotulo">Últimos votos:</span>
+          <span class="ultimos-lista" id="ultimos"></span>
+        </div>
       </div>
     </div>
   </section>
+
+  <section class="secao secao--cinza">
+    <div class="container">
+      <div class="secao-topo">
+        <h2>Os jogos de sempre</h2>
+        <p class="sub">voltam toda semana, sem entrar na votação</p>
+      </div>
+      <div class="grade grade--capas" style="--colunas: 4" id="frequentes"></div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container linha-botoes">
+      <a class="botao botao--secundario botao--discord-hover" href="https://discord.gg/4jtUT4HGaC" target="_blank" rel="noopener" id="btnDiscord">Discord</a>
+      <a class="botao botao--secundario botao--spotify" href="https://open.spotify.com/playlist/2mQninpIxtRe11WPOM6ceH" target="_blank" rel="noopener" id="btnSpotify">Playlist dos inscritos</a>
+      <a class="botao botao--secundario botao--livepix" href="https://livepix.gg/ricgameplays" target="_blank" rel="noopener" id="btnLivepix">LivePix</a>
+    </div>
+  </section>
+
+  <section class="secao-patrocinio container" style="padding-bottom: var(--e-9)"><ric-patrocinio></ric-patrocinio></section>
 </main>
 
-<footer class="rodape" id="rodape"></footer>
+<ric-rodape></ric-rodape>
 
-<script type="module" src="/js/inicio.js"></script>
-<script type="module" src="/js/rodape.js"></script>
+<script type="module" src="/js/pagina-inicio.js"></script>
 </body>
 </html>

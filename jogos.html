@@ -1,11 +1,82 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-tema="claro">
 <head>
 <meta charset="utf-8">
-<title>Frequentes · Ric Gameplays</title>
-<!-- os jogos curtos viraram Frequentes -->
-<meta http-equiv="refresh" content="0; url=/frequentes">
-<link rel="canonical" href="/frequentes">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jogos do canal · Ric Gameplays</title>
+<meta name="description" content="Os jogos do canal Ric Gameplays: o que está sendo jogado agora, a fila da votação, os jogos de sempre como Hytale e Valorant, e o que já foi zerado.">
+<link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+<link rel="apple-touch-icon" href="/img/ric.webp">
+<script src="/js/tema.js"></script>
+<link rel="stylesheet" href="/css/sistema.css">
+<script type="module" src="/js/componentes.js"></script>
 </head>
-<body><a href="/frequentes">Ir para os Frequentes</a></body>
+<body>
+<ric-topo pagina="jogos"></ric-topo>
+
+<main>
+  <section class="container pagina-topo">
+    <p class="olho">Tudo o que eu jogo</p>
+    <h1 class="pagina-titulo">Os jogos do canal, do que está rolando ao que já zerei.</h1>
+    <p class="lead">Séries longas escolhidas pela votação, os jogos de sempre e o que ficou pelo caminho. A lista vem do Notion e atualiza sozinha.</p>
+    <div class="linha">
+      <a class="botao botao--principal" href="/series">Ver a votação</a>
+      <a class="botao botao--secundario" href="/biblioteca">Abrir a biblioteca</a>
+    </div>
+  </section>
+
+  <section class="secao" id="secJogando" style="padding-top: 0">
+    <div class="container">
+      <div class="secao-topo"><h2>Jogando agora</h2><p class="sub">as séries em andamento no canal</p></div>
+      <div class="grade" style="--colunas: 3" id="jogando"></div>
+    </div>
+  </section>
+
+  <section class="secao secao--cinza" id="secFila">
+    <div class="container">
+      <div class="secao-topo"><h2>Na fila</h2><p class="sub">a ordem em que bateram a meta não muda mais</p></div>
+      <div class="cartao lista-cartao"><ul class="lista-jogos" id="fila"></ul></div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <div class="secao-topo"><h2>Na votação</h2><p class="sub">resgate com RicPoints na Twitch</p><a class="acao" href="/series">Abrir o placar →</a></div>
+      <div class="cartao"><div class="pilha" style="gap: var(--e-5)" id="votacao"></div></div>
+    </div>
+  </section>
+
+  <section class="secao secao--cinza" id="frequentes">
+    <div class="container">
+      <div class="secao-topo"><h2>Frequentes</h2><p class="sub">voltam toda semana, sem entrar na votação</p></div>
+      <div class="grade grade--capas" style="--colunas: 4" id="listaFrequentes"></div>
+      <div class="cartao jogue-comigo">
+        <h3>Jogue comigo</h3>
+        <p>Os servidores de Hytale em que eu jogo. Entre e me procure lá dentro.</p>
+        <div class="grade" style="--colunas: 2" id="servidores"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao" id="secZerados">
+    <div class="container">
+      <div class="secao-topo"><h2>Já zerados</h2><p class="sub">séries que chegaram ao fim no canal</p></div>
+      <div class="cartao lista-cartao"><ul class="lista-jogos lista-jogos--peq" id="zerados"></ul></div>
+    </div>
+  </section>
+
+  <section class="secao secao--cinza" id="secPausados">
+    <div class="container">
+      <div class="secao-topo"><h2>Pausados</h2><p class="sub">parados por enquanto, podem voltar</p></div>
+      <div class="cartao lista-cartao"><ul class="lista-jogos lista-jogos--peq" id="pausados"></ul></div>
+    </div>
+  </section>
+
+  <section class="secao-patrocinio container" style="padding: var(--e-9) 0"><ric-patrocinio></ric-patrocinio></section>
+</main>
+
+<ric-rodape></ric-rodape>
+
+<script type="module" src="/js/pagina-jogos.js"></script>
+</body>
 </html>
