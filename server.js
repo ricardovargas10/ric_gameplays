@@ -366,9 +366,20 @@ numeros.meses = numeros.meses || {};
 numeros.instagram = numeros.instagram || {};
 // até ter um mês inteiro medido aqui, vale o que o painel da Twitch mostrou (set a nov de 2026)
 numeros.base = numeros.base || { mediaEspectadores: 2.8, horasMes: 88, periodo: "set a nov de 2026" };
+// pico de cada live (o maior número de pessoas assistindo ao mesmo tempo); até ter 5 lives medidas, vale o que o Ric informou
+numeros.base.picoMedio = numeros.base.picoMedio ?? 8;
+numeros.picos = numeros.picos || []; // [{ data, pico }] das últimas lives
 const AMOSTRA_MIN = 5;
 const mesDe = d => d.toISOString().slice(0, 7);
+function picos() {
+  const lista = numeros.picos.slice(-20).map(p => p.pico); // últimas 20 lives
+  if (lista.length < 5) return { picoMedio: numeros.base.picoMedio, maiorPico: lista.length ? Math.max(...lista) : null };
+  return { picoMedio: Math.round(lista.reduce((a, b) => a + b, 0) / lista.length), maiorPico: Math.max(...lista) };
+}
 function resumoTwitch() {
+  return { ...resumoMedia(), ...picos() };
+}
+function resumoMedia() {
   const atual = mesDe(new Date());
   // meses completos com pelo menos 10 h de live medidas; vale a média dos 3 últimos
   const medidos = Object.entries(numeros.meses).filter(([m, v]) => m < atual && v.minutos >= 600).sort().slice(-3).map(([, v]) => v);
@@ -393,6 +404,14 @@ async function medirTwitch() {
     if (n.aoVivo) {
       const m = (numeros.meses[mesDe(new Date())] = numeros.meses[mesDe(new Date())] || { amostras: 0, soma: 0, minutos: 0 });
       m.amostras++; m.soma += n.espectadores; m.minutos += AMOSTRA_MIN;
+      // live em andamento: guarda o maior número visto
+      numeros.sessao = numeros.sessao || { inicio: Date.now(), pico: 0 };
+      numeros.sessao.pico = Math.max(numeros.sessao.pico, n.espectadores);
+      numeros.sessao.ultima = Date.now();
+    } else if (numeros.sessao && Date.now() - numeros.sessao.ultima > 30 * 60000) {
+      // a live acabou (30 min sem voltar, para uma queda rápida não contar como duas lives): o pico dela entra na conta
+      if (numeros.sessao.pico > 0) numeros.picos = [...numeros.picos, { data: numeros.sessao.inicio, pico: numeros.sessao.pico }].slice(-60);
+      delete numeros.sessao;
     }
     gravarAgora("numeros.json", numeros);
     publicarNumeros();
